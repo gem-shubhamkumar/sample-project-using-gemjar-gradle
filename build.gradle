@@ -1,46 +1,48 @@
-plugins {
-    id 'java'
-}
+defaultTasks 'clean', 'test', 'aggregate'
+
+apply plugin: 'java'
+apply plugin: 'net.serenity-bdd.aggregator'
 
 group 'org.sample'
 version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-//    mavenLocal()
     flatDir {
-        dirs 'C:\\Shubham\\IntelliJ\\GemJar-WS\\gemjar-gradle\\build\\libs'
-//        dirs 'C:/Shubham/IntelliJ/GemJar-WS/gemjar-gradle/build/libs'
+        dirs 'C:\\Shubham\\IntelliJ\\GemJar-WS\\Gradle\\mobile-gemjar\\build\\libs'
     }
 }
 
-
-
-//ext {
-//    javaClientVersion = 8.1.1
-//    cucumber.java.version = 7.8.1
-//    cucumber.junit.version = 7.8.1
-//}
+buildscript {
+    project.ext {
+        serenityVersion = '2.3.12'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath('net.serenity-bdd:serenity-gradle-plugin:' + serenityVersion)
+        classpath('net.serenity-bdd:serenity-single-page-report:' + serenityVersion)
+    }
+}
 
 dependencies {
-    implementation group:'com.gemini.generic', name: 'gemjar-gradle', version: '1.0-SNAPSHOT'
-//    implementation 'com.gemini.generic:shadow:'
+    implementation group: 'com.gemini.generic', name: 'mobile-gemjar', version: '1.0-SNAPSHOT-all'
+//    implementation 'com.gemini.generic:mobile-gemjar:1.0-SNAPSHOT-all'
+}
 
-    implementation 'junit:junit:4.11'
-    implementation 'io.appium:java-client:8.1.1'
-    implementation 'org.seleniumhq.selenium:selenium-java:4.4.0'
-    implementation 'org.seleniumhq.selenium:selenium-remote-driver:4.4.0'
-    implementation 'org.seleniumhq.selenium:selenium-api:4.2.2'
-    implementation 'commons-io:commons-io:2.11.0'
-    implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'commons-codec:commons-codec:1.11'
-    implementation 'io.cucumber:cucumber-java:7.3.4'
-    implementation 'io.cucumber:cucumber-testng:7.3.4'
-    implementation 'io.github.bonigarcia:webdrivermanager:5.2.3'
-    implementation 'io.cucumber:cucumber-junit:7.0.0'
+serenity {
+    reports = ["single-page-html"]
 }
 
 test {
-    useJUnit()
+    ignoreFailures = true
+    filter {
+        includeTestsMatching "*.runner.*"
+    }
+    testLogging.showStandardStreams = true
+    systemProperties System.getProperties()
 }
+gradle.startParameter.continueOnFailure = true
 
+test.finalizedBy(aggregate)

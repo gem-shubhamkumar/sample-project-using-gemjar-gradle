@@ -1,16 +1,18 @@
 package com.gemini.generic.steps;
 
 import com.gemini.generic.MobileAction;
+import com.gemini.generic.MobileDriverManager;
 import com.gemini.generic.locator.Locators;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import net.serenitybdd.core.pages.PageObject;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class TestSteps {
+public class TestSteps extends PageObject {
     @Given("launch the app and verify the opened app")
     public void launchTheAppAndVerifyTheOpenedApp() {
         MobileAction.waitUntilElementVisible(Locators.label_appHead, 20);
@@ -19,7 +21,10 @@ public class TestSteps {
 
     @When("click on signup button")
     public void clickOnSignupButton() {
-        MobileAction.click(Locators.button_signup, "sign up");
+//        MobileAction.click(Locators.button_signup, "sign up");
+        clickOn(MobileAction.getElement(Locators.button_signup));
+
+//        MobileAction
     }
 
     @Then("wait until signup page load")
@@ -30,7 +35,8 @@ public class TestSteps {
 
     @And("enter signup name {string}")
     public void enterSignupName(String name) {
-        MobileAction.typeText(Locators.input_signupName, name, "name");
+//        MobileAction.typeText(Locators.input_signupName, name, "name");
+        typeInto(MobileAction.getElement(Locators.input_signupName), name);
     }
 
     @And("enter signup email {string}")
